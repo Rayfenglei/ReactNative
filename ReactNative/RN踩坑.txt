@@ -1,0 +1,66 @@
+第一坑：JS server 不能连接 
+原因：react-native默认使用8081端口 被占用
+
+查看端口是否被占用:netstat -ano | findstr 8080
+查看占用端口的应用:tasklist | findstr processID
+解决办法:
+1、如果能直接杀死占用端口的应用 则直接杀死
+2、不能杀死的情况。
+(1)新开一个窗口，例如运行react-native start --port 8080 --reset-cache 换一个没有程序在用的端口
+(2)新开一个窗口，运行react-native run-android --port 8080
+(3)打开手机或者模拟器的dev setting 设置IP端口，IP为计算机IP，端口为8080
+(4)再次运行react-native run-android --port 8080
+
+第二坑：react-native不能生成index.android.bundle
+
+1.建立assets文件夹
+2.根目录运行命令 离线打包
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+3.重新运行react-native run-android
+
+
+d78b502268f7456b79fbe7228cecdd46  other
+
+e775428f31df0e4d309c2ec3e81b034e my
+
+第三坑：修改代码后
+修改代码后
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+重新编译
+
+
+第四坑：
+"react-navigation": "^2.4.1"
+
+
+第五坑： style设置
+//正常设置
+style={{width: 50, height: 50, backgroundColor: 'powderblue'}}
+
+//这是情况是从StyleSheet.create 中设置
+style={ [ styles.red , styles.bigblue ] }
+
+const 和 let 
+
+第六坑：在控件中配置中使用内部方法
+
+
+例如: <TouchableHighlight  onPress={ () => this.pressToDetail(item.url) } >
+
+需要在中绑定方法才能使用
+ constructor(props){
+    super(props);
+    this.pressToDetail = this.pressToDetail.bind(this);
+  }
+
+第七坑：使用react-native-video V4.0.0+版本需要在
+app/build.gradle file:
+添加一下语句
+android {
+   ... // Various other settings go here
+
+   compileOptions {
+     targetCompatibility JavaVersion.VERSION_1_8
+   }
+
+}

@@ -1,0 +1,110 @@
+Windows Android
+1.安装Chocolatry（Windows包管理器）
+安装命令
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
+升级
+choco upgrade chocolatey
+
+2.安装Python 2 (不支持 python 3)
+choco install python2
+
+3.安装node
+choco install nodejs.install
+
+设置npm镜像
+npm config set registry https://registry.npm.taobao.org --global
+npm config set disturl https://npm.taobao.org/dist --global
+
+4.Yarn、React Native的命令行工具（react-native-cli）
+npm install -g yarn react-native-cli
+
+设置yarn镜像
+yarn config set registry https://registry.npm.taobao.org --global
+yarn config set disturl https://npm.taobao.org/dist --global
+
+yarn可以代替npm
+
+5.安装AS
+
+SDK Platforms: Android 8.1 (Oreo)
+
+Android SDK Platform 27
+Intel x86 Atom_64 System Image
+
+SDK Tools:
+
+Android SDK Build-Tools 27.0.3（必须是这个版本）
+
+6.ANDROID_HOME环境变量
+新建 ANDROID_HOME 环境变量指向了Android SDK的路径。
+
+7.推荐安装的工具 Gradle Daemon
+(if not exist "%USERPROFILE%/.gradle" mkdir "%USERPROFILE%/.gradle") && (echo org.gradle.daemon=true >> "%USERPROFILE%/.gradle/gradle.properties")
+
+8.测试安装
+
+react-native init AwesomeProject
+cd AwesomeProject
+设置IP和端口
+生成index文件
+react-native run-android
+
+
+Android集成RN
+1.配置项目目录结构
+  （1）首先创建一个空目录用于存放 React Native 项目
+  （2）然后在其中创建一个/android子目录，把你现有的 Android 项目拷贝到/android子目录中
+
+2.安装 JavaScript 依赖包
+  （1）根目录创建package.json文件
+    {
+ 	"name": "MyReactNativeApp",
+  	"version": "0.0.1",
+  	"private": true,
+  	"scripts": {
+    	"start": "node node_modules/react-native/local-cli/cli.js start"
+  	}
+    }
+   （2）yarn add react-native react --save
+
+3.RN集成
+
+  （1）在app的build.gradle
+	
+	dependencies {
+    		implementation 'com.android.support:appcompat-v7:27.1.1'
+   
+    		implementation "com.facebook.react:react-native:+" // From node_modules
+	}
+
+	当出现32 64等.so包的报错
+	defaultConfig {
+		ndk {
+	            	abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        	}
+	}
+  （2）在根build.gradle
+	allprojects {
+    	   repositories {
+        	maven {
+           	 url "$rootDir/../node_modules/react-native/android"
+        	}  	
+	    }
+	}  
+  （3）权限声明
+ 	<uses-permission android:name="android.permission.INTERNET" />
+	<activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+  （4）编写RN文件
+	创建一个index.js文件
+        AppRegistry.registerComponent(‘AndroidRnDemoApp’, () => HelloWorld);里面的AndroidRnDemoApp,这个作为要绑定的activity的入口通道名。
+  
+  （5）编写activity文件
+	//这里的AndroidRnDemoApp必须对应“index.js”中的“AppRegistry.registerComponent()”的第一个参数
+        mReactRootView.startReactApplication(mReactInstanceManager, "MyReactNativeAppS", null);
+        //加载ReactRootView到布局中
+        setContentView(mReactRootView);
+
+  （6）app/src/main创建一个assets目录，打离线包生成index.android.bundle	
+
+  （7）运行程序	

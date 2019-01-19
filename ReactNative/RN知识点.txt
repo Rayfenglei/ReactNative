@@ -1,0 +1,61 @@
+AppRegistry.registerComponent，第一个参数是前面package.json里设置的name，第二个参数是自定义的component。
+
+
+React Navigation：
+export default createAppContainer(AppNavigator);//注册导航器
+
+const AppNavigator = createStackNavigator({ //添加跳转页面
+  Home: {		//home页面
+    screen: HomeScreen,
+  },
+  Details: {		//details页面
+    screen: DetailsScreen,
+  },
+}, {
+    initialRouteName: 'Details', //默认页面
+});
+
+
+
+//跳转
+方式1.
+<Button
+  onPress={() => {
+    this.props.navigation.dispatch(StackActions.reset({
+    index: 0,
+    actions: [
+        NavigationActions.navigate({ routeName: 'Details' })
+         ],
+    }))
+ }}
+/>
+
+方式2. 
+<Button
+   onPress={() => this.props.navigation.navigate('Details')} //跳转 DetailsScreen
+   onPress={() => this.props.navigation.goBack()} //返回上个页面	
+
+/>
+
+
+TabNavigator：
+
+1.注册路由：
+const SimpleAppNavigator = TabNavigator({
+    page1: {screen: FirstPage},
+    page2: {screen: SecondPage},
+    page3: {screen: ThirdPage},
+    page4: {screen: FourthPage}
+},{
+     initialRouteName: 'page1',
+     swipeEnabled: true,
+     animationEnabled: true,
+     lazy: false,
+     tabBarPosition:'bottom',
+ });
+2.使用导航：
+render(){
+        return(
+            <SimpleAppNavigator/>
+        )
+    }
